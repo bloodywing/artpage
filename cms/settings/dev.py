@@ -6,11 +6,11 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%$!zvb+l41kvobdsqo@_#(n%!7vtwy8fylbdqprt8)%-#831&$'
+SECRET_KEY = '%$!zvb+l41kvobdsqo@_#(n%!7vtwy8fylbdqprtr3rdkls'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-ALLOWED_HOSTS = ['pierre.isartistic.biz', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 INSTALLED_APPS.extend([
     'django_extensions',
