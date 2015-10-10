@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-blogpage{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        {% for block in self.body %}
+            {% if block.block_type == 'picturelist' %}
+
+            <div class="row">
+            <div id="carousel-gallery-{{ forloop.counter }}" class="carousel slide" data-ride="carousel">
+
+                <ol class="carousel-indicators">
+                    {% for item in block.value reversed %}
+                        <li data-target="#carousel-gallery-{{forloop.parentloop.counter}}"
+                                data-slide-to="{{ forloop.counter0 }}"></li>
+                    {% endfor %}
+                </ol>
+
+                <div class="carousel-inner" role="listbox">
+                    {% for item in block.value reversed %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            {% image item.image detail-fill-1920x740-c75 as tmp_img %}
+                            {% image item.image detail-fill-960x640-c75 as tmp_imgw %}
+                            <img src="{{ tmp_img.url }}" alt="{{ item.image.title }}" class="hidden-sm-down"/>
+                            <img src="{{ tmp_imgw.url }}" alt="{{ item.image.title }}" class="hidden-md-up"/>
+                            <div class="carousel-caption">
+                                <h3>{{ item.image.title }}</h3>
+                                <p>{{ item.image.description }}
+                                <br>
+                                    <button class="openimage btn btn-primary btn-sm" data-toggle="modal"
+                                            data-target="#modal-{{ forloop.parentloop.counter }}-{{ forloop.counter }}">Open</button>
+                                </p>
+                            </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% for item in block.value reversed %}
+                <div class="modal fade" id="modal-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
+                                    tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                                <span class="sr-only">Close</span>
+                                            </button>
+                                            <h4 class="modal-title">{{ item.image.title }}</h4>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            {% image item.image original as tmp_img %}
+                                            <img class="img-fluid"
+                                                 src="{{ tmp_img.url }}"
+                                                 alt="{{ item.image.title }}"/>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <p><a class="btn btn-secondary btn-sm" href="{{ tmp_img.url }}" target="downloadgallery">Download</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                </div>
+                {% endfor %}
+
+                  <a class="left carousel-control" href="#carousel-gallery-{{ forloop.counter }}" role="button" data-slide="prev">
+                    <span class="icon-prev" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                  <a class="right carousel-control" href="#carousel-gallery-{{ forloop.counter }}" role="button" data-slide="next">
+                    <span class="icon-next" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                  </a>
+            </div>
+            </div>
+
+            <div class="row">
+                {% for item in block.value reversed %}
+                    {% image item.image contrast-0.4-fill-260x180-c75 as tmp_img %}
+                    <div class="col-xs-6 col-sm-4 col-md-2 col-lg-1 p-a-0">
+                    <a href="#carousel-gallery-{{ forloop.parentloop.counter }}" class="carouselnav" data-slide-to="{{forloop.counter0}}">
+                        <img src="{{ tmp_img.url }}" alt="{{ item.image.title}}" class="img-fluid pull-left"/>
+                    </a>
+                        </div>
+                {% endfor %}
+            </div>
+
+
+            {% else %}
+                <div class="block-{{ block.block_type }}">
+                    {{ block.value }}
+                </div>
+            {% endif %}
+
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js%}
+<script type="text/javascript">
+    $('.carouselnav').on('click', function(e) {
+        var car = $(this).attr('href');
+        $(car).carousel('pause');
+    });
+</script>
+{% endblock %}

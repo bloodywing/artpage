@@ -1,0 +1,12 @@
+{% load cms_tags wagtailcore_tags %}
+
+<div class="row">
+
+    <div class="col-sm-12">
+        {% for sl in social_labels %}
+            <h5><a href="{{ sl.url }}" target="_blank" class="label label-default p-a" style="width: 100%; background-color: #{{ sl.color }}">
+                <i class="fa fa-{{ sl.icon }}"></i> {{ sl.text }}</a>
+            </h5>
+        {% endfor %}
+    </div>
+</div>

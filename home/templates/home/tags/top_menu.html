@@ -1,0 +1,37 @@
+{% load cms_tags wagtailcore_tags %}
+{% get_site_root as site_root %}
+
+
+<nav class="navbar navbar-dark bg-inverse">
+    <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#mainnav">
+    &#9776;
+    </button>
+    <div class="collapse navbar-toggleable-xs" id="mainnav">
+        <a href="{% pageurl site_root %}" class="navbar-brand" title="{{ site_root.title }}">
+            <i class="fa fa-paint-brush"></i> .isartistic
+        </a>
+        <ul class="nav navbar-nav">
+            {% for menuitem in menuitems %}
+                <li class="nav-item {% if menuitem.show_dropdown %}dropdown{% endif %}{% if menuitem.active %} active{% endif %}">
+                    {% if menuitem.show_dropdown %}
+                        <ag
+                                data-toggle="dropdown"
+                                class="dropdown-toggle nav-link"
+                                role="button"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            {{ menuitem.title }}
+                        </ag>
+                        {% top_menu_children parent=menuitem %}
+                    {% else %}
+                        <a href="{% pageurl menuitem %}" class="nav-link">{{ menuitem.title }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- <form class="form-inline navbar-form pull-right" action="{% url 'search' %}" method="get">
+        <input class="form-control" type="text" placeholder="Search..." value="{{ search_query }}">
+        <button class="btn btn-success-outline" type="submit">Search</button>
+    </form> -->
+</nav>

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% load blog_tags mathfilters wagtailcore_tags wagtailimages_tags wagtailembeds_tags %}
+
+{% block body_class %}template-blogpage{% endblock %}
+
+{% block meta %}
+
+    {% image self.main_image fill-600x600-c75 as img_ogp %}
+
+    <!-- FB stuff -->
+
+    <meta property="og:image" content="http://{{ request.get_host }}{{ img_ogp.url }}" />
+    <meta property="og:image:width" content="600" />
+    <meta property="og:image:height" content="600" />
+    <meta property="og:url" content="http://{{ request.get_host }}{{ self.url }}" />
+    <meta property="og:title" content="{{ self.title }}" />
+    <meta property="og:description" content="{{ self.intro }}"/>
+
+    <!-- Twitter stuff -->
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="http://{{ request.get_host }}{{ self.url }}">
+    <meta name="twitter:title" content="{{ self.title }}">
+    <meta name="twitter:description" content="{{ self.intro }}">
+    <meta name="twitter:image" content="http://{{ request.get_host }}{{ img_ogp.url }}">
+    <meta name="twitter:image:width" content="600">
+    <meta name="twitter:image:height" content="600">
+
+{% endblock %}
+
+{% block content %}
+<div class="row p-t">
+    <div class="col-lg-8">
+    <div class="card" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+        <meta itemprop="datePublished" content="{{ self.date }}"/>
+
+        {% image self.main_image contrast-2.2-fill-1200x400-c75 as img_bg %}
+
+        <img src="{{img_bg.url}}" alt="{{ self.main_image.title }}" class="img-fluid">
+        <div class="card-header">
+            <span itemprop="headline">{{ self.title }}</span> <i class="fa fa-pencil"></i> <small class="text-muted">{{ self.date }} - {{ self.owner.get_short_name }}</small>
+        </div>
+        <div class=" card-block">
+            <h4 class="card-title" itemprop="description">{{ self.intro }}</h4>
+            <div class="card-text">
+            {% for block in self.body %}
+                {% if block.block_type == 'heading' %}
+                    <h5>{{ block.value }}</h5>
+                {% elif block.block_type == 'embed' %}
+                    <div class="embed-responsive embed-responsive-16by9">
+                    {{ block.value.url|embed }}
+                    </div>
+                {% elif block.block_type == 'image' %}
+                    {% image block.value max-1200x640 as img2 %}
+                    {% image block.value original as img_original %}
+                    <div class="block-image text-center">
+                        <div class="m-t card">
+                                <div class="card-block "><div class="card-text">
+                            <figure class="figure col-xs-12">
+                            <img src="{{ img2.url }}" class="img-rounded center-block img-fluid" alt="{{ block.value.title }}">
+                            <figcaption class="figure-caption">{{ block.value.description }}
+                            </figcaption>
+                            </figure>
+
+                                <span class="label label-info">{{ img_original.width }} x {{ img_original.height }}
+                                    @ {{ block.value.file.size|intdiv:1024 }}kB</span>
+                                <a href="{{ img_original.url }}"
+                               download="{{ block.value.title|slugify }}{{ block.value.extension }}"
+                               class="btn btn-secondary btn-sm"><i class="fa fa-download" title="Download this"></i></a>
+                                </div>
+                                    </div>
+                         </div>
+                    </div>
+                {% else %}
+                    <div itemprop="articleBody" class="block-{{ block.block_type }}">
+                        {{ block.value }}
+                    </div>
+                {% endif %}
+
+            {% endfor %}
+            </div>
+            {% if self.related_links.all %}
+            <h5>Related Links:</h5>
+            <div class="card-text">
+                <ul class="list-unstyled">
+                {% for item in self.related_links.all %}
+                    <li><i class="fa fa-{% if not item.link_page %}external-{% endif %}link"></i> <a href="{{ item.link }}">{{ item.title }}</a></li>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="">
+        {% social_widgets %}
+
+        </div>
+        {% include 'includes/lessbuttons.html' %}
+        <div class="comments">
+                <div id="disqus_thread"></div>
+
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES * * */
+            var disqus_shortname = 'CHANGEME';
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+            </div>
+    </div>
+</div>
+{% endblock %}

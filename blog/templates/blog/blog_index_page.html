@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block meta %}
+{% endblock %}
+
+{% block content %}
+    <div class="row p-t">
+        <div class="col-sm-12">
+    <h1>{{ self.title }}</h1>
+
+
+    <div class="intro">{{ self.intro|richtext }}</div>
+            </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 hidden-sm-down">
+            <div class="card-columns">
+                {% for item in blogs %}
+                    <div class="card">
+                        {% image item.main_image blur-2-fill-800x300-c100 as img_tmp %}
+                        <img src="{{ img_tmp.url }}" class="img-fluid card-img-top" alt="{{ item.main_image.title }}">
+                        <div class="card-block">
+                            <h4 class="card-title">{{ item.title }}</h4>
+                            <p class="card-text">{{ item.intro }}</p>
+                            <p class="card-text"><small class="text-muted">{{ item.date }} - {{ item.owner.get_short_name }}</small></p>
+                            <a href="{{ item.url }}" class="btn btn-primary btn-block">Read more</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% for item in blogs %}
+                    <div class="row hidden-md-up">
+                        <div class="col-xs-12">
+                                <div class="card">
+                                    {% image item.main_image blur-5-fill-520x120-c100 as img_tmp %}
+                                    <img src="{{ img_tmp.url }}" class="img-fluid card-img-top" alt="{{ item.main_image.title }}">
+                                    <div class="card-block">
+                                        <h4 class="card-title">{{ item.title }}</h4>
+                                        <p class="card-text">{{ item.intro }}</p>
+                                        <p class="card-text"><small class="text-muted">{{ item.date }} - {{ item.owner.get_short_name }}</small></p>
+                                        <a href="{{ item.url }}" class="btn btn-primary btn-block">Read more</a>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-sm-4 previous">
+            {% if blogs.has_previous %}
+                <a href="?page={{ blogs.previous_page_number }}{% for key,value in request.GET.items %}{% ifnotequal key 'page' %}&amp;{{ key }}={{ value }}{% endifnotequal %}{% endfor %}">Previous</a>
+            {% endif %}
+        </div>
+        <div class="col-sm-4 pages">
+            Page {{ blogs.number }} of {{ blogs.paginator.num_pages }}
+        </div>
+        <div class="col-sm-4 next">
+            {% if blogs.has_next %}
+                <a href="?page={{ blogs.next_page_number }}{% for key,value in request.GET.items %}{% ifnotequal key 'page' %}&amp;{{ key }}={{ value }}{% endifnotequal %}{% endfor %}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <a href="http://www.bloggeramt.de/" title="Blog" target="_blank"><img src="http://www.bloggeramt.de/images/blog_button13.gif" style="border:0;" alt="Blogverzeichnis" /></a>
+        </div>
+    </div>
+
+{% endblock %}

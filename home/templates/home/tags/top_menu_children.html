@@ -1,0 +1,10 @@
+{% load cms_tags wagtailcore_tags %}
+
+<div class="dropdown-menu bg-inverse">
+    {# Include link to parent because the parent link is a drop down #}
+        <a class="dropdown-item text-info" href="{% pageurl parent %}">{{ parent.title }}</a>
+        <div class="dropdown-divider"></div>
+    {% for child in menuitems_children %}
+        <a class="dropdown-item text-info" href="{% pageurl child %}">{{ child.title }}</a>
+    {% endfor %}
+</div>

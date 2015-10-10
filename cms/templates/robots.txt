@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Sitemap: http://pierre.isartistic.biz/sitemap.xml
+
+User-agent: Baiduspider
+User-agent: baiduspider
+User-agent: Baiduspider+
+User-agent: Baiduspider-video
+User-agent: Baiduspider-image
+Disallow: /

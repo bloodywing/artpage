@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-homepage{% endblock %}
+
+{% block content %}
+
+{% if self.related_links.all %}
+<div class="row p-t">
+        {% for item in self.related_links.all %}
+            <div class="col-md-6 col-lg-{% if self.related_links.all|length < 3 %}6{% else %}4{% endif %}">
+                <div class="card card-inverse">
+                {% image item.image contrast-0.8-fill-780x420-c100 as tmp_img %}
+                    <img class="img-fluid card-img" src="{{ tmp_img.url }}" alt="{{ item.image.title }}">
+                    <a href="{{ item.link }}">
+                    <div class="card-img-overlay" style="background: rgba(0, 0, 0, 0.7)">
+                        <h4 class="card-title text-uppercase">{{ item.title }}</h4>
+                        <p class="card-text">{{ item.text }}</p>
+                    </div>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+</div>
+{% endif %}
+
+<div class="row p-t">
+    <div class="col-sm-12">
+    {% for block in self.body %}
+        {% if block.block_type == 'heading' %}
+            <h3>{{ block.value }}</h3>
+        {% elif block.block_type == 'jumbotron' %}
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <h1 class="display-3">{{ block.value.headline }}</h1>
+                    {{ block.value.lead }}
+                </div>
+            </div>
+        {% else %}
+            {{ block.value }}
+        {% endif %}
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

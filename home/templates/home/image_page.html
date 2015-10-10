@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% load mathfilters wagtailcore_tags wagtailimages_tags wagtailembeds_tags %}
+
+{% block body_class %}template-homepage{% endblock %}
+
+{% block meta%}
+        <link rel="alternate" type="application/rss+xml" title="{{ self.title }} RSS" href="/latest/feed/imgdump_rss?id={{ self.pk }}" />
+        <link rel="alternate" type="application/atom+xml" title="{{ self.title }} Atom" href="/latest/feed/imgdump_atom?id={{ self.pk }}" />
+{% endblock %}
+
+{% block content %}
+<div class="row p-t text-center">
+    <a href='http://cloud.feedly.com/#subscription%2Ffeed%2Fhttp%3A%2F%2Fpierre.isartistic.biz%2Flatest%2Ffeed%2Fimgdump_atom%3Fid%3D{{ self.pk }}'  target='blank'><img id='feedlyFollow' src='http://s3.feedly.com/img/follows/feedly-follow-rectangle-volume-medium_2x.png' alt='follow us in feedly' width='71' height='28'></a>
+</div>
+<div class="row p-t">
+        <div class="card-columns">
+        {% for block in self.body %}
+            {% if block.block_type == 'image' %}
+            {% image block.value max-1200x640 as img2 %}
+            {% image block.value original as img_original %}
+            <div class="block-image text-center">
+                <div class="card">
+                        <div class="card-block">
+                            <div class="card-text">
+                        <figure class="figure col-xs-12">
+                        <img itemprop="image" src="{{ img2.url }}" class="img-rounded center-block img-fluid" alt="{{ block.value.title }}">
+                        <figcaption class="figure-caption">{{ block.value.description }}
+                        </figcaption>
+                        </figure>
+
+                        <span class="label label-info">{{ img_original.width }} x {{ img_original.height }}
+                            @ {{ block.value.file.size|intdiv:1024 }}kB</span>
+                        <a href="{{ img_original.url }}"
+                       download="{{ block.value.title|slugify }}{{ block.value.extension }}"
+                       class="btn btn-secondary btn-sm"><i class="fa fa-download" title="Download this"></i></a>
+                        </div>
+                            </div>
+                 </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+</div>
+{% endblock %}
