@@ -9,7 +9,7 @@ django-redis
 html5lib==0.999
 msgpack-python
 mysqlclient
-Pillow>2.9.0
+Pillow>3.4.0
 pytz==2015.4
 redis==2.10.3
 wagtail
